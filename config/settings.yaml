@@ -1,0 +1,64 @@
+# ============================================================
+# regime-trader configuration
+# All runtime parameters live here. Edit freely; never commit
+# credentials.yaml or .env to version control.
+# ============================================================
+
+broker:
+  paper_trading: true                    # ALWAYS start with paper
+  symbols:
+    - SPY
+    - QQQ
+    - AAPL
+    - MSFT
+    - AMZN
+    - GOOGL
+    - NVDA
+    - META
+    - TSLA
+    - AMD
+  timeframe: 1Day                        # Alpaca bar timeframe
+
+hmm:
+  n_candidates: [3, 4, 5, 6, 7]         # State counts tested during model selection
+  n_init: 10                             # EM restarts per candidate (picks best log-likelihood)
+  covariance_type: full                  # full | diag | tied | spherical
+  min_train_bars: 200                    # Minimum history bars before fitting
+  stability_bars: 3                      # Consecutive bars required before regime is confirmed
+  flicker_window: 20                     # Lookback bars for flicker detection
+  flicker_threshold: 4                   # Max allowed regime changes within flicker_window
+  min_confidence: 0.55                   # Minimum posterior probability to act on a regime
+
+strategy:
+  low_vol_allocation: 0.95              # Equity allocation in low-vol bull regime
+  mid_vol_allocation_trend: 0.95        # Allocation when mid-vol + trend confirmed
+  mid_vol_allocation_no_trend: 0.60     # Allocation when mid-vol, no trend
+  high_vol_allocation: 0.60            # Allocation in high-vol / stress regime
+  low_vol_leverage: 1.25               # Mild leverage allowed in low-vol bull only
+  rebalance_threshold: 0.10            # Drift from target before rebalancing triggers
+  uncertainty_size_mult: 0.50          # Position size multiplier when regime confidence is low
+
+risk:
+  max_risk_per_trade: 0.01             # Max portfolio fraction at risk on a single trade
+  max_exposure: 0.80                   # Max gross portfolio exposure at any time
+  max_leverage: 1.25                   # Hard leverage ceiling (overrides strategy lever)
+  max_single_position: 0.15           # Max single-symbol weight
+  max_concurrent: 5                    # Max open positions simultaneously
+  max_daily_trades: 20                 # Circuit breaker: halt after N trades in a day
+  daily_dd_reduce: 0.02               # Reduce position size 50% when daily DD hits this
+  daily_dd_halt: 0.03                 # Halt all new trades when daily DD hits this
+  weekly_dd_reduce: 0.05              # Reduce size 50% when weekly DD hits this
+  weekly_dd_halt: 0.07               # Halt new trades when weekly DD hits this
+  max_dd_from_peak: 0.10             # Hard stop: halt system if drawdown from peak exceeds this
+
+backtest:
+  slippage_pct: 0.0005               # Round-trip slippage estimate per trade
+  initial_capital: 100000            # Starting portfolio value ($)
+  train_window: 252                  # Walk-forward training window (trading days)
+  test_window: 126                   # Walk-forward out-of-sample window (trading days)
+  step_size: 126                     # Walk-forward step between folds (trading days)
+  risk_free_rate: 0.045              # Annual risk-free rate for Sharpe calculation
+
+monitoring:
+  dashboard_refresh_seconds: 5       # Terminal dashboard refresh interval
+  alert_rate_limit_minutes: 15       # Minimum minutes between repeat alerts of same type

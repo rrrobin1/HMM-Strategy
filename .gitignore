@@ -1,0 +1,40 @@
+# Secrets
+.env
+config/credentials.yaml
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+env/
+
+# Runtime state
+state_snapshot.json
+web_state.json
+
+# Trained models (large binaries)
+models/*.pkl
+
+# Results / outputs
+results/
+
+# Data & logs
+*.log
+logs/
+data/cache/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# Claude Code local settings
+.claude/settings.local.json
+
+# OS
+.DS_Store
+Thumbs.db
